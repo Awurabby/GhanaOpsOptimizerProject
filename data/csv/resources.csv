@@ -1,0 +1,31 @@
+resourceId,type,homeLocation,capacity,availabilityStatus
+1,Maintenance Team,1,5,Available
+2,Electrician Team,3,4,Available
+3,Plumbing Team,3,3,Busy
+4,Security Patrol Unit,9,6,Available
+5,Cleaning Crew,10,8,Available
+6,Network Support Team,5,4,Busy
+7,Road Maintenance Team,4,5,Available
+8,Waste Management Team,6,7,Available
+9,Emergency Response Team,3,10,Available
+10,Water Services Team,2,5,Busy
+11,Electrical Technician,7,2,Available
+12,Security Officer Group,8,6,Available
+13,ICT Support Team,5,5,Busy
+14,Grounds Maintenance Team,1,6,Available
+15,Facility Inspection Team,4,3,Available
+16,Plumbing Assistant Team,3,4,Available
+17,Transport Unit,2,5,Busy
+18,Health Response Team,3,8,Available
+19,Waste Collection Unit,10,6,Available
+20,Power Repair Team,6,4,Busy
+21,Campus Safety Team,9,7,Available
+22,Carpentry Team,7,3,Available
+23,Building Maintenance Team,4,6,Busy
+24,Network Engineer Team,5,3,Available
+25,Fire Response Unit,3,8,Available
+26,Security Support Team,8,5,Busy
+27,Water Inspection Team,2,4,Available
+28,Road Inspection Team,6,3,Available
+29,Emergency Logistics Team,1,6,Busy
+30,General Support Team,10,5,Available
