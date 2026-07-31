@@ -5,14 +5,6 @@ package com.team.smartops.algorithms.search;
  * Binary search -- state and test the sorted-input precondition.
  */
 public class BinarySearch {
-    /**
-     * Performs binary search on a sorted array.
-     *
-     * @param sortedArr the sorted array
-     * @param target the value to search for
-     * @param <T> the data type
-     * @return index if found, otherwise -1
-     */
     public static <T extends Comparable<T>> int binarySearch(T[] sortedArr, T target) {
 
         if (sortedArr == null || sortedArr.length == 0) {
