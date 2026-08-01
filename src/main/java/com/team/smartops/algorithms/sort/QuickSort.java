@@ -5,6 +5,7 @@ package com.team.smartops.algorithms.sort;
  * From scratch. Note partitioning + worst-case discussion.
  */
 public class QuickSort {
+
     public static void quickSort(int[] arr, int low, int high) {
 
         if (arr == null || arr.length <= 1) {
