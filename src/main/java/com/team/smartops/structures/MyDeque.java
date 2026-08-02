@@ -54,7 +54,7 @@ public class MyDeque<T> {
     }
 
     public T removeFront() {
-        if (isEmpty()) throw new CollectionStateException("Cannot remove from an empty deque");
+        if (isEmpty()) throw new IllegalStateException("Cannot remove from an empty deque");
         T value = head.value;
         head = head.next;
         if (head == null) {
@@ -67,7 +67,7 @@ public class MyDeque<T> {
     }
 
     public T removeRear() {
-        if (isEmpty()) throw new CollectionStateException("Cannot remove from an empty deque");
+        if (isEmpty()) throw new IllegalStateException("Cannot remove from an empty deque");
         T value = tail.value;
         tail = tail.prev;
         if (tail == null) {
@@ -80,12 +80,12 @@ public class MyDeque<T> {
     }
 
     public T peekFront() {
-        if (isEmpty()) throw new CollectionStateException("Cannot peek an empty deque");
+        if (isEmpty()) throw new IllegalStateException("Cannot peek an empty deque");
         return head.value;
     }
 
     public T peekRear() {
-        if (isEmpty()) throw new CollectionStateException("Cannot peek an empty deque");
+        if (isEmpty()) throw new IllegalStateException("Cannot peek an empty deque");
         return tail.value;
     }
 
