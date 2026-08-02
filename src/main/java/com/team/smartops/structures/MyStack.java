@@ -24,7 +24,7 @@ public class MyStack<T> {
 
     @SuppressWarnings("unchecked")
     public T pop(){
-        if(isEmpty()) throw new CollectionStateException("Cannot pop from an empty stack");
+        if(isEmpty()) throw new IllegalStateException("Cannot pop from an empty stack");
         T top = (T) data[size - 1];
         data[size - 1] = null;
         size--;
@@ -33,7 +33,7 @@ public class MyStack<T> {
 
     @SuppressWarnings("unchecked")
     public T peek(){
-        if(isEmpty()) throw new CollectionStateException("Cannot peek from an empty stack");
+        if(isEmpty()) throw new IllegalStateException("Cannot peek from an empty stack");
         return (T) data[size - 1];
     }
 
