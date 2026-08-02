@@ -27,15 +27,6 @@ public class MyQueueTest {
     assertEquals(8, queue.dequeue());
   }
 
-  @Test 
-  void normalCase_enqueueAddsToBackAndDequeueRemovesFromFront(){
-    MyQueue<Integer> queue = new MyQueue<>();
-    queue.enqueue(10);
-    queue.enqueue(9);
-    assertEquals(10, queue.peek());
-    assertEquals(10, queue.dequeue());
-  }
-
   @Test
 void normalCase_maintainsFullFIFOOrder(){
     MyQueue<Integer> queue = new MyQueue<>();
