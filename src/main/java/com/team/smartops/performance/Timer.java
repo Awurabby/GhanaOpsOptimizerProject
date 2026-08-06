@@ -5,5 +5,17 @@ package com.team.smartops.performance;
  * Wraps timing for any algorithm run (nanoTime), feeds AlgorithmRunRepository.
  */
 public class Timer {
-    // TODO: implement + keep this ready to explain in the oral defense
+
+
+    public static long timeInNanos(Runnable task) {
+
+        long start = System.nanoTime();
+
+        task.run();
+
+        long end = System.nanoTime();
+
+        return end - start;
+    }
+
 }

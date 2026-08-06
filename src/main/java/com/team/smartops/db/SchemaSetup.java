@@ -1,11 +1,35 @@
 package com.team.smartops.db;
 
-/**
- * OWNER: Team B (Database).
- * Creates the tables described in the brief (Section 4): locations, roads,
- * service_requests, resources, algorithm_runs, audit_events.
- * Run this once against resources/schema.sql, or execute it programmatically.
- */
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.Statement;
+
 public class SchemaSetup {
-    // TODO: CREATE TABLE statements / read from resources/schema.sql
+
+    public static void main(String[] args) {
+
+        try (Connection conn = DatabaseConnection.connect()) {
+
+            String sql = Files.readString(
+                    Paths.get("src/main/resources/schema.sql")
+            );
+
+            Statement statement = conn.createStatement();
+
+            String[] queries = sql.split(";");
+
+            for (String query : queries) {
+                if (!query.trim().isEmpty()) {
+                    statement.execute(query);
+                }
+            }
+
+            System.out.println("Database tables created successfully!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
