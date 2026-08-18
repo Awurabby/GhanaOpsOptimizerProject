@@ -1,51 +1,62 @@
 locationId,name,area,type,latitude,longitude
-1,Balme Library,Legon,Library,5.6500,-0.1870
-2,Pentagon Hostel,Legon,Hostel,5.6380,-0.1880
-3,University Hospital,Legon,Hospital,5.6480,-0.1900
-4,JQB Building,Legon,Academic,5.6510,-0.1860
-5,Computer Science Department,Legon,Academic,5.6515,-0.1875
-6,UG Business School,Legon,Academic,5.6490,-0.1855
-7,Legon Hall,Legon,Hostel,5.6530,-0.1890
-8,Akuafo Hall,Legon,Hostel,5.6520,-0.1910
-9,Commonwealth Hall,Legon,Hostel,5.6540,-0.1920
-10,Mensah Sarbah Hall,Legon,Hostel,5.6550,-0.1930
-12,UG Main Gate,Legon,Entrance,5.6505,-0.1869
-13,Balme Library,Legon,Library,5.6501,-0.1875
-14,University Administration,Legon,Administrative,5.6500,-0.1880
-15,School of Computing,Legon,Academic,5.6510,-0.1878
-16,Department of Statistics,Legon,Academic,5.6512,-0.1876
-17,School of Engineering Sciences,Legon,Academic,5.6389,-0.1907
-18,School of Law,Legon,Academic,5.6508,-0.1885
-19,UG Business School,Legon,Academic,5.6514,-0.1892
-20,JQB Lecture Theatre,Legon,Academic,5.6492,-0.1870
-21,Great Hall,Legon,Academic,5.6520,-0.1870
-22,Pentagon Hostel,Legon,Hostel,5.6550,-0.1855
-23,TF Hostel,Legon,Hostel,5.6540,-0.1849
-24,Akuafo Hall,Legon,Hostel,5.6531,-0.1872
-25,Commonwealth Hall,Legon,Hostel,5.6548,-0.1870
-26,Volta Hall,Legon,Hostel,5.6538,-0.1880
-27,Mensah Sarbah Hall,Legon,Hostel,5.6527,-0.1865
-28,Jean Nelson Ackah Hall,Legon,Hostel,5.6542,-0.1862
-29,Legon Hall,Legon,Hostel,5.6515,-0.1868
-30,Elizabeth Frances Sey Hall,Legon,Hostel,5.6555,-0.1872
-31,UG Medical Centre,Legon,Healthcare,5.6520,-0.1900
-32,UG Security Office,Legon,Security,5.6507,-0.1865
-33,UG Fire Station,Legon,Emergency,5.6488,-0.1920
-34,UG Sports Stadium,Legon,Sports,5.6490,-0.1950
-35,UG Swimming Pool,Legon,Sports,5.6495,-0.1935
-36,UG Night Market,Legon,Commercial,5.6560,-0.1840
-37,UG Cafeteria,Legon,Food_Service,5.6525,-0.1875
-38,Commonwealth Market,Legon,Commercial,5.6552,-0.1878
-39,UG SRC Union Building,Legon,Administrative,5.6518,-0.1879
-40,UG Graduate School,Legon,Administrative,5.6504,-0.1882
-41,UG Distance Education Building,Legon,Administrative,5.6506,-0.1884
-42,UG Balme Bookshop,Legon,Commercial,5.6502,-0.1874
-43,UG Botanical Gardens,Legon,Recreation,5.6408,-0.1865
-44,UG Arboretum,Legon,Recreation,5.6415,-0.1858
-45,UG Agricultural Research Station,Legon,Research,5.6420,-0.1880
-46,UG Veterinary School,Legon,Academic,5.6418,-0.1900
-47,UG School of Public Health,Legon,Academic,5.6425,-0.1890
-48,UG ISSER Building,Legon,Research,5.6498,-0.1888
-49,UG ICT Directorate,Legon,Technology,5.6509,-0.1877
-50,UG Transportation Office,Legon,Transport,5.6511,-0.1866
-52,UG Business School Graduate Building,Department,5.6505,-0.1857
+1,Balme Library,Legon,Library,5.651740,-0.187046 
+2,Pentagon Hostel,Legon,Hostel,5.656667,-0.180993 
+3,University Hospital,Legon,Hospital,5.651069,-0.177961 
+4,JQB Building,Legon,Academic,5.652255,-0.181751 
+5,Department of Physics,Legon,Academic,5.651474,-0.186078 
+6,Department of Sociology,Legon,Academic,5.650374,-0.189711 
+7,International Students' Hostel,Legon,Hostel,5.640034,-0.185194 
+8,Akuafo Hall,Legon,Hostel,5.650424,-0.185703 
+9,Alexander Kwapong Hall,Legon,Hostel,5.637271,-0.186162 
+10,GCB Lecture Building,Legon,Academic,5.655022,-0.188377 
+11,UG Main Gate,Legon,Entrance,5.642001,-0.200220 
+12,University Guest Centre,Legon,Administrative,5.644924,-0.189686 
+13,College of Basic and Applied Science,Legon,Academic,5.650167,-0.183659 
+14,Computer Science Department,Legon,Academic,5.654569,-0.183852 
+15,Department of Statistics,Legon,Academic,5.653869,-0.183836 
+16,School of Engineering Sciences,Legon,Academic,5.655316,-0.183029
+17,School of Law,Legon,Academic,5.654213,-0.183297 
+18,UG Business School,Legon,Academic,5.658560,-0.177562 
+19,Vikings Hostel,Legon,Hostel,5.544062,-0.185965 
+20,Dr. Hilla Limann Hall,Legon,Hostel,5.637335,-0.184880 
+21,Great Hall,Legon,Academic,5.650613,-0.196261 
+22,Jubilee Hall,Legon,Hostel,5.640250,-0.185521 
+23,TF Hostel,Legon,Hostel,5.666408,-0.182119 
+24,Department of Political Science,Legon,Academic,5.654700,-0.186414 
+25,Commonwealth Hall,Legon,Hostel,5.650742,-0.191382 
+26,Evandy Hostel,Legon,Hostel,5.663002,-0.181739 
+27,Mensah Sarbah Hall,Legon,Hostel,5.645425,-0.186157 
+28,Jean Nelson Ackah Hall,Legon,Hostel,5.635263,-0.188462 
+29,Legon Hall,Legon,Hostel,5.649958,-0.188409 
+30,Elizabeth Frances Sey Hall,Legon,Hostel,5.635960,-0.187592 
+31,Volta Hall,Legon,Hostel,5.651997,-0.189821 
+32,UG Security Office,Legon,Security,5.650682,-0.181078 
+33,UG Fire Station,Legon,Emergency,5.648696,-0.181227 
+34,UG Sports Stadium,Legon,Sports,5.639027,-0.180086 
+35,UG Swimming Pool,Legon,Sports,5.639718,-0.182346 
+36,UG Night Market,Legon,Commercial,5.641815,-0.185790 
+37,UG Central Cafeteria,Legon,Food_Service,5.646852,-0.186790 
+38,Bani Hostel,Legon,Hostel,5.651699,-0.189827 
+39,UG SRC Union Building,Legon,Administrative,5.646961,-0.187657 
+40,UG Graduate School,Legon,Administrative,5.657728,-0.176648 
+41,UG Department of Information Studies,Legon,Academic,5.655068,-0.187294 
+42,UG Balme Bookshop,Legon,Commercial,5.651735,-0.187049 
+43,UG Botanical Gardens,Legon,Recreation,5.653411,-0.184982 
+44,UG Legon Tennis Club,Legon,Sports,5.652383,-0.192607 
+45,UG School of Pharmacy,Legon,Academic,5.653983,-0.189266 
+46,UG Veterinary School,Legon,Academic,5.650365,-0.182827 
+47,UG School of Public Health,Legon,Academic,5.636709,-0.182590 
+48,UG ISSER Building,Legon,Research,5.654492,-0.184406 
+49,UG Public Affairs Directorate,Legon,Administrative,5.651050,-0.195398 
+50,UG Department of Biochemistry Cell and Molecular Biology,Legon,Academic,5.654805,-0.189470 
+51,UG Department of Plant and Environmental Biology,Legon,Academic,5.653816,-0.186232
+52,University Banking Square,Legon,Commercial,5.642592,-0.185723
+53,Ghana-Korea Information Access Centre,Legon,Academic,5.652052,-0.187753
+54,ECOWAS Coastal and Marine Resources Management Centre,Legon,Administrative,5.652794,-0.183923
+55,Department of Chemistry,Legon,Academic,5.652706,-0.185279
+56,Department of Psychology,Legon,Academic,5.6551200,-0.1855073
+57,School of Performing Arts,Legon,Academic,5.650192,-0.181967
+58,Institute of African Studies,Legon,Academic,5.649321,-0.181110
+59,School of Nursing and Midwifery,Legon,Academic,5.653541,-0.190227
+60,Noguchi Memorial Institute for Medical Research,Legon,Academic,5.634268,-0.183155
+61,Valco Trust Hostel,Legon,Hostel,5.644770,-0.186854
