@@ -22,7 +22,7 @@ public class CircularQueue<T> {
     }
 
     public void enqueue(T value) {
-        if (size == capacity) throw new CollectionStateException("Cannot enqueue: queue is full");
+        if (size == capacity) throw new IllegalStateException("Cannot enqueue: queue is full");
         data[rear] = value;
         rear = (rear + 1) % capacity;
         size++;
@@ -30,7 +30,7 @@ public class CircularQueue<T> {
 
     @SuppressWarnings("unchecked")
     public T dequeue() {
-        if (isEmpty()) throw new CollectionStateException("Cannot dequeue from an empty queue");
+        if (isEmpty()) throw new IllegalStateException("Cannot dequeue from an empty queue");
         T value = (T) data[front];
         data[front] = null;
         front = (front + 1) % capacity;
@@ -40,7 +40,7 @@ public class CircularQueue<T> {
 
     @SuppressWarnings("unchecked")
     public T peek() {
-        if (isEmpty()) throw new CollectionStateException("Cannot peek from an empty queue");
+        if (isEmpty()) throw new IllegalStateException("Cannot peek from an empty queue");
         return (T) data[front];
     }
 
