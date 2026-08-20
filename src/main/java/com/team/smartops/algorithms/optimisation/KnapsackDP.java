@@ -36,6 +36,8 @@ public class KnapsackDP {
      * @param budget   total budget/capacity available
      */
     public Result solveWithReconstruction(List<ServiceRequest> requests, int budget) {
+        validateInputs(requests, budget);
+
         int n = requests.size();
         int[][] dp = new int[n + 1][budget + 1];
 
@@ -67,6 +69,26 @@ public class KnapsackDP {
         Collections.reverse(selected);
 
         return new Result(dp[n][budget], selected, dp);
+    }
+
+    private void validateInputs(List<ServiceRequest> requests, int budget) {
+        if (requests == null) {
+            throw new IllegalArgumentException("requests must not be null");
+        }
+        if (budget < 0) {
+            throw new IllegalArgumentException("budget must not be negative");
+        }
+
+        for (ServiceRequest request : requests) {
+            if (request.getCost() < 0) {
+                throw new IllegalArgumentException(
+                    "request cost must not be negative: " + request.getRequestId());
+            }
+            if (request.getValue() < 0) {
+                throw new IllegalArgumentException(
+                    "request value must not be negative: " + request.getRequestId());
+            }
+        }
     }
 
     /**
