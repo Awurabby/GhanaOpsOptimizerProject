@@ -55,7 +55,7 @@ class GreedyAssignmentTest {
     }
 
     @Test
-    void invalidInput_emptyRequestList_returnsEmptyAssignments() {
+    void boundaryCase_emptyRequestList_returnsEmptyAssignments() {
         List<ServiceRequest> requests = Collections.emptyList();
         List<Resource> resources = new ArrayList<>(List.of(
             new Resource("Res1", "van", "Zone1", true)
@@ -67,32 +67,72 @@ class GreedyAssignmentTest {
     }
 
     @Test
-    void counterexample_greedyGivesWorseTotalValueThanAlternative() {
-        // Reproduces the documented greedy-failure scenario in code.
-        // R1 is reachable by both A and B; R2 only reasonably reachable by A.
+    void invalidInput_nullRequestList_isRejected() {
+        IllegalArgumentException error = assertThrows(
+            IllegalArgumentException.class,
+            () -> new GreedyAssignment(fixedDistance).greedyAssign(null, new ArrayList<>())
+        );
+
+        assertEquals("requests must not be null", error.getMessage());
+    }
+
+    @Test
+    void invalidInput_nullResourceList_isRejected() {
+        IllegalArgumentException error = assertThrows(
+            IllegalArgumentException.class,
+            () -> new GreedyAssignment(fixedDistance).greedyAssign(Collections.emptyList(), null)
+        );
+
+        assertEquals("resources must not be null", error.getMessage());
+    }
+
+    @Test
+    void equalDistance_usesLowestResourceIdAsTieBreaker() {
         List<ServiceRequest> requests = List.of(
-            new ServiceRequest("A", "Zone1", "Zone1", "cat", 9, 1, 9),
-            new ServiceRequest("B", "Zone2", "Zone2", "cat", 5, 1, 5)
+            new ServiceRequest("REQ1", "Balme Library", "Pentagon Hostel", "Maintenance", 5, 1, 5)
         );
         List<Resource> resources = new ArrayList<>(List.of(
-            new Resource("R1", "van", "Zone1", true),  // close to A, reachable by B too
-            new Resource("R2", "van", "Zone1", true)   // only useful for A in this scenario
+            new Resource("R2", "van", "Main Gate", true),
+            new Resource("R1", "van", "University Hospital", true)
+        ));
+
+        List<Assignment> result = new GreedyAssignment(fixedDistance).greedyAssign(requests, resources);
+
+        assertEquals("R1", result.get(0).getResourceId());
+    }
+
+    @Test
+    void counterexample_greedyGivesWorseTotalValueThanAlternative() {
+        // Greedy uses the resource closest to Balme Library first, leaving the
+        // Pentagon Hostel request with a very expensive remaining assignment.
+        List<ServiceRequest> requests = List.of(
+            new ServiceRequest("A", "Balme Library", "Balme Library", "Maintenance", 9, 1, 9),
+            new ServiceRequest("B", "Pentagon Hostel", "Pentagon Hostel", "Maintenance", 5, 1, 5)
+        );
+        List<Resource> resources = new ArrayList<>(List.of(
+            new Resource("R1", "van", "Main Gate", true),
+            new Resource("R2", "van", "University Hospital", true)
         ));
 
         GreedyAssignment.DistanceLookup distance = (from, to) -> {
-            // R1 is closest to A's zone; R2 is far from B's zone entirely.
-            if (from.equals("Zone1")) return 1.0;       // A -> either resource: both at Zone1
-            if (from.equals("Zone2")) return to.equals("Zone1") ? 100.0 : 1.0; // B can't realistically reach Zone1
-            return 1.0;
+            if (from.equals("Balme Library") && to.equals("Main Gate")) return 1.0;
+            if (from.equals("Balme Library") && to.equals("University Hospital")) return 3.0;
+            if (from.equals("Pentagon Hostel") && to.equals("Main Gate")) return 1.0;
+            if (from.equals("Pentagon Hostel") && to.equals("University Hospital")) return 100.0;
+            throw new IllegalArgumentException("unexpected route");
         };
 
         List<Assignment> greedyResult = new GreedyAssignment(distance).greedyAssign(requests, resources);
 
-        // Greedy assigns nearest-available to A first (R1, distance 1), leaving
-        // B effectively unreachable (distance 100) -- document this trade-off
-        // in the report alongside the printCounterexampleScenario() output.
-        assertEquals(2, greedyResult.size(), "greedy still technically assigns both, but at a much worse total distance");
+        assertEquals(List.of("R1", "R2"),
+            greedyResult.stream().map(Assignment::getResourceId).toList());
         double totalDistance = greedyResult.stream().mapToDouble(Assignment::getDistance).sum();
-        assertTrue(totalDistance > 50, "greedy's choice forces a very costly assignment for B");
+        assertEquals(101.0, totalDistance);
+
+        double alternativeDistance =
+            distance.distanceBetween("Balme Library", "University Hospital")
+                + distance.distanceBetween("Pentagon Hostel", "Main Gate");
+        assertEquals(4.0, alternativeDistance);
+        assertTrue(totalDistance > alternativeDistance);
     }
 }

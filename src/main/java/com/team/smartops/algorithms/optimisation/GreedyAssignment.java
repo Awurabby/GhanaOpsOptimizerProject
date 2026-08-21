@@ -42,6 +42,13 @@ public class GreedyAssignment {
      * @return the list of assignments made, in the order requests were processed
      */
     public List<Assignment> greedyAssign(List<ServiceRequest> requests, List<Resource> resources) {
+        if (requests == null) {
+            throw new IllegalArgumentException("requests must not be null");
+        }
+        if (resources == null) {
+            throw new IllegalArgumentException("resources must not be null");
+        }
+
         List<ServiceRequest> sorted = sortByUrgencyDescending(requests);
         List<Assignment> assignments = new ArrayList<>();
 
@@ -52,7 +59,9 @@ public class GreedyAssignment {
             for (Resource candidate : resources) {
                 if (!candidate.isAvailable()) continue;
                 double d = distanceLookup.distanceBetween(request.getSource(), candidate.getHomeLocation());
-                if (d < bestDistance) {
+                if (d < bestDistance
+                        || (Double.compare(d, bestDistance) == 0
+                        && hasLowerResourceId(candidate, nearest))) {
                     bestDistance = d;
                     nearest = candidate;
                 }
@@ -67,6 +76,11 @@ public class GreedyAssignment {
             // logged/returned separately for the report.
         }
         return assignments;
+    }
+
+    private boolean hasLowerResourceId(Resource candidate, Resource current) {
+        return current == null
+                || candidate.getResourceId().compareTo(current.getResourceId()) < 0;
     }
 
     /**
@@ -87,36 +101,32 @@ public class GreedyAssignment {
      * produces a worse total outcome than a different first choice would.
      *
      * Scenario (work this out on paper first, then compare to this code):
-     *   - Resource R1 is very close to urgent Request A, but R1 is the ONLY
-     *     resource within reach of Request B.
-     *   - Resource R2 is a bit farther from Request A, but useless for B.
-     *   - Greedy assigns R1 to A (nearest), leaving B unreachable by R2.
-     *   - A smarter choice assigns R2 to A and saves R1 for B, serving both.
+     *   - R1 is closest to urgent Request A and also close to Request B.
+     *   - R2 is slightly farther from A but very far from B.
+     *   - Greedy assigns R1 to A, forcing B to use distant R2.
+     *   - A smarter choice assigns R2 to A and saves R1 for B.
      *
      * Use this method's output directly in your report as the documented
      * counterexample trace.
      */
     public static void printCounterexampleScenario() {
         System.out.println("=== Greedy Counterexample ===");
-        System.out.println("Requests: A (urgency=9, source=Zone1), B (urgency=5, source=Zone2)");
-        System.out.println("Resources: R1@Zone1 (reachable by A and B), R2@Zone1-far (reachable by A only)");
+        System.out.println("Requests: A (urgency=9, Balme Library), B (urgency=5, Pentagon Hostel)");
+        System.out.println("Resources: R1 at Main Gate, R2 at University Hospital");
         System.out.println();
         System.out.println("Greedy trace:");
         System.out.println("  1. Sort by urgency: [A, B]");
         System.out.println("  2. A's nearest available resource -> R1 (distance 1) -- ASSIGNED");
-        System.out.println("  3. B's nearest available resource -> none left that can reach Zone2 -- UNSERVED");
-        System.out.println("  Total value served: value(A) only");
+        System.out.println("  3. Only R2 remains for B (distance 100) -- ASSIGNED");
+        System.out.println("  Total distance: 101");
         System.out.println();
         System.out.println("Alternative (non-greedy) trace:");
-        System.out.println("  1. Assign R2 to A instead (distance 3, still reachable within deadline)");
-        System.out.println("  2. R1 remains free -> assign to B (distance 1) -- ASSIGNED");
-        System.out.println("  Total value served: value(A) + value(B)  <-- strictly better");
+        System.out.println("  1. Assign R2 to A instead (distance 3)");
+        System.out.println("  2. R1 remains free -> assign to B (distance 1)");
+        System.out.println("  Total distance: 4  <-- strictly better");
         System.out.println();
         System.out.println("Conclusion: greedy's 'always nearest' rule is locally optimal at each step");
         System.out.println("but globally suboptimal here, because it doesn't account for which future");
-        System.out.println("requests a resource is uniquely able to serve.");
-        System.out.println();
-        System.out.println("NOTE: replace Zone1/Zone2/R1/R2 with real locations and distances from your");
-        System.out.println("team's actual dataset before putting this in the report.");
+        System.out.println("requests will need each resource later.");
     }
 }

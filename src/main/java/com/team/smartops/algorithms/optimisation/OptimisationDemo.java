@@ -20,7 +20,7 @@ public class OptimisationDemo {
         System.out.println();
         GreedyAssignment.printCounterexampleScenario();
         System.out.println();
-        runKnapsackDemo();
+        runBudgetSelectionComparisonDemo();
     }
 
     private static void runGreedyDemo() {
@@ -47,23 +47,26 @@ public class OptimisationDemo {
         assignments.forEach(System.out::println);
     }
 
-    private static void runKnapsackDemo() {
-        System.out.println("=== Knapsack DP Demo ===");
+    private static void runBudgetSelectionComparisonDemo() {
+        System.out.println("=== Greedy vs DP Budget Selection ===");
 
         List<ServiceRequest> requests = List.of(
-            new ServiceRequest("R1", "Zone1", "Zone3", "maintenance", 9, 3, 9),
-            new ServiceRequest("R2", "Zone2", "Zone4", "delivery", 5, 2, 5),
-            new ServiceRequest("R3", "Zone1", "Zone5", "maintenance", 7, 4, 7),
-            new ServiceRequest("R4", "Zone3", "Zone2", "delivery", 4, 1, 4),
-            new ServiceRequest("R5", "Zone2", "Zone1", "maintenance", 6, 3, 6)
+            new ServiceRequest("A", "Balme Library", "Pentagon Hostel", "maintenance", 5, 3, 5),
+            new ServiceRequest("B", "University Hospital", "Main Gate", "delivery", 3, 2, 3),
+            new ServiceRequest("C", "Commonwealth Hall", "Balme Library", "maintenance", 3, 2, 3)
         );
-        int budget = 6;
+        int budget = 4;
 
+        GreedyBudgetSelector.Result greedy =
+            new GreedyBudgetSelector().select(requests, budget);
         KnapsackDP dp = new KnapsackDP();
-        KnapsackDP.Result result = dp.solveWithReconstruction(requests, budget);
+        KnapsackDP.Result optimal = dp.solveWithReconstruction(requests, budget);
 
-        dp.printTable(result.table, requests, budget);
-        System.out.println("Best total value: " + result.bestValue);
-        System.out.println("Requests selected: " + result.selected);
+        System.out.println("Budget: " + budget);
+        System.out.println("Greedy selected: " + greedy.selected
+            + " | cost=" + greedy.totalCost + " | value=" + greedy.totalValue);
+        System.out.println("DP selected: " + optimal.selected
+            + " | value=" + optimal.bestValue);
+        System.out.println("DP improvement: " + (optimal.bestValue - greedy.totalValue));
     }
 }

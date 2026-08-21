@@ -48,11 +48,59 @@ class KnapsackDPTest {
     }
 
     @Test
-    void invalidInput_emptyRequestList_returnsZeroValue() {
+    void boundaryCase_emptyRequestList_returnsZeroValue() {
         KnapsackDP.Result result = new KnapsackDP().solveWithReconstruction(Collections.emptyList(), 10);
 
         assertEquals(0, result.bestValue);
         assertTrue(result.selected.isEmpty());
+    }
+
+    @Test
+    void invalidInput_nullRequestList_isRejected() {
+        IllegalArgumentException error = assertThrows(
+            IllegalArgumentException.class,
+            () -> new KnapsackDP().solveWithReconstruction(null, 10)
+        );
+
+        assertEquals("requests must not be null", error.getMessage());
+    }
+
+    @Test
+    void invalidInput_negativeBudget_isRejected() {
+        IllegalArgumentException error = assertThrows(
+            IllegalArgumentException.class,
+            () -> new KnapsackDP().solveWithReconstruction(Collections.emptyList(), -1)
+        );
+
+        assertEquals("budget must not be negative", error.getMessage());
+    }
+
+    @Test
+    void invalidInput_negativeRequestCost_isRejected() {
+        List<ServiceRequest> requests = List.of(
+            new ServiceRequest("R1", "Z1", "Z2", "cat", 5, -1, 3)
+        );
+
+        IllegalArgumentException error = assertThrows(
+            IllegalArgumentException.class,
+            () -> new KnapsackDP().solveWithReconstruction(requests, 10)
+        );
+
+        assertEquals("request cost must not be negative: R1", error.getMessage());
+    }
+
+    @Test
+    void invalidInput_negativeRequestValue_isRejected() {
+        List<ServiceRequest> requests = List.of(
+            new ServiceRequest("R1", "Z1", "Z2", "cat", 5, 1, -3)
+        );
+
+        IllegalArgumentException error = assertThrows(
+            IllegalArgumentException.class,
+            () -> new KnapsackDP().solveWithReconstruction(requests, 10)
+        );
+
+        assertEquals("request value must not be negative: R1", error.getMessage());
     }
 
     @Test
