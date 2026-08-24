@@ -17,10 +17,8 @@ import java.util.*;
  *
  * TODO: replace the DistanceLookup interface usage with Team C's real
  * graph/distance API once it's available (e.g. graph.shortestDistance(a, b)).
- * TODO: replace the manual sort in sortByUrgency() with Team D's real sort
- * implementation (their custom merge sort / quicksort), since built-in
- * sort utilities may not be allowed for assessed core logic -- confirm
- * whether this counts as "core logic" or orchestration glue.
+ * Urgency ordering is implemented manually so assessed core logic does not
+ * depend on Java's built-in sorting utilities.
  */
 public class GreedyAssignment {
 
@@ -32,6 +30,9 @@ public class GreedyAssignment {
     private final DistanceLookup distanceLookup;
 
     public GreedyAssignment(DistanceLookup distanceLookup) {
+        if (distanceLookup == null) {
+            throw new IllegalArgumentException("distanceLookup must not be null");
+        }
         this.distanceLookup = distanceLookup;
     }
 
@@ -47,6 +48,12 @@ public class GreedyAssignment {
         }
         if (resources == null) {
             throw new IllegalArgumentException("resources must not be null");
+        }
+        for (ServiceRequest request : requests) {
+            if (request.getUrgency() < 0) {
+                throw new IllegalArgumentException(
+                    "request urgency must not be negative: " + request.getRequestId());
+            }
         }
 
         List<ServiceRequest> sorted = sortByUrgencyDescending(requests);
@@ -83,15 +90,21 @@ public class GreedyAssignment {
                 || candidate.getResourceId().compareTo(current.getResourceId()) < 0;
     }
 
-    /**
-     * TEMPORARY: simple descending-urgency sort using Collections.sort.
-     * Replace with Team D's from-scratch sort before final submission --
-     * built-in sorts are fine for demo/glue code but check the brief's
-     * rule on assessed core logic before leaving this in.
-     */
+    /** Stable insertion sort by urgency, highest urgency first. */
     private List<ServiceRequest> sortByUrgencyDescending(List<ServiceRequest> requests) {
         List<ServiceRequest> copy = new ArrayList<>(requests);
-        copy.sort((a, b) -> Integer.compare(b.getUrgency(), a.getUrgency()));
+
+        for (int i = 1; i < copy.size(); i++) {
+            ServiceRequest current = copy.get(i);
+            int j = i - 1;
+
+            while (j >= 0 && copy.get(j).getUrgency() < current.getUrgency()) {
+                copy.set(j + 1, copy.get(j));
+                j--;
+            }
+            copy.set(j + 1, current);
+        }
+
         return copy;
     }
 

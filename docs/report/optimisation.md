@@ -93,12 +93,36 @@ grew much more sharply by 1,000 requests.
 The operational choice is therefore not that one algorithm is universally better. Greedy offers
 speed and lower memory use; DP offers an optimal value under the stated 0/1 knapsack model.
 
+## Project data mapping
+
+`OptimisationCsvLoader` converts the shared CSV records into the optimisation model. It keeps
+only pending requests, resolves integer location IDs through `locations.csv`, and maps urgency as
+Critical = 4, High = 3, Medium = 2 and Low = 1. Value is `urgency score x 10`.
+
+The shared request data has no cost field. Until the group defines a measured operational cost,
+Team F uses a documented category weight: electrical = 5; maintenance, repair, plumbing and
+water = 4; security, internet, network and equipment = 3; cleaning, inspection and complaint =
+2; and any other category = 3. These values represent relative effort, not currency or distance.
+Changing this policy changes the selected requests and requires a new experiment.
+
+The runnable optimisation demo now loads pending requests from the shared CSV files. Its budget
+of 20 is a demonstration default. It must be replaced with the group-agreed index-number-derived
+budget before final submission because the team member index numbers are not present in the
+repository.
+
+## Correctness evidence
+
+- [DP trace table](../trace-tables/optimisation-dp-trace.md)
+- [Knapsack DP correctness proof sketch](../proof-sketches/knapsack-dp-correctness.md)
+- [Greedy counterexamples](../proof-sketches/greedy-counterexamples.md)
+
 ## Limitations
 
-- The requests are deterministic generated inputs, not records loaded from the project database.
-- Cost and value still need an agreed mapping from the database fields before final integration.
+- Timing uses deterministic generated requests; the runnable demo separately verifies CSV mapping.
+- The category-cost policy is a Team F assumption until the main group approves it.
 - Three measured runs are enough for the project protocol but not for rigorous JVM benchmarking.
 - Increasing request count and budget together shows the combined scaling effect. A separate
   experiment that holds one variable fixed would isolate each factor more clearly.
-- The current greedy ordering uses insertion sort. Replacing it with an O(n log n) generic sort
-  from Team D would change the greedy growth curve and should trigger a fresh timing run.
+- The current greedy ordering uses insertion sort because Team D exposes only `int[]` sorting.
+  Replacing it with a generic O(n log n) Team D sort would change the greedy growth curve and
+  should trigger a fresh timing run.

@@ -11,10 +11,8 @@ import java.util.*;
  * maximizes total value without exceeding a budget/capacity, using each
  * request at most once.
  *
- * Two entry points:
- *   - solve(...)   returns just the best achievable value (classic DP)
- *   - solveWithReconstruction(...) also returns WHICH requests were chosen,
- *     which the brief explicitly requires -- the table alone isn't enough.
+ * solveWithReconstruction(...) returns the best value, selected requests and
+ * full table required for the project evidence.
  */
 public class KnapsackDP {
 
