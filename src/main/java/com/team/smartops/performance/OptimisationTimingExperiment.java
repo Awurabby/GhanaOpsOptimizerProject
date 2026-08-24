@@ -3,6 +3,7 @@ package com.team.smartops.performance;
 import com.team.smartops.algorithms.optimisation.GreedyBudgetSelector;
 import com.team.smartops.algorithms.optimisation.KnapsackDP;
 import com.team.smartops.algorithms.optimisation.ServiceRequest;
+import com.team.smartops.db.DatabaseConnection;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -84,7 +87,7 @@ public class OptimisationTimingExperiment {
         );
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
         OptimisationTimingExperiment experiment = new OptimisationTimingExperiment();
         List<Measurement> allMeasurements = new ArrayList<>();
 
@@ -106,6 +109,13 @@ public class OptimisationTimingExperiment {
 
         experiment.writeCsv(OUTPUT_PATH, allMeasurements);
         System.out.println("Results written to " + OUTPUT_PATH);
+
+        if (args.length == 1 && "--persist".equals(args[0])) {
+            try (Connection connection = DatabaseConnection.connect()) {
+                new OptimisationRunRecorder().save(connection, allMeasurements);
+            }
+            System.out.println("Results written to algorithm_runs");
+        }
     }
 
     private static List<ServiceRequest> generateRequests(int inputSize) {

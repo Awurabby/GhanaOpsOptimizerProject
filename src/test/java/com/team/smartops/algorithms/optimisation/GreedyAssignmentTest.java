@@ -87,6 +87,50 @@ class GreedyAssignmentTest {
     }
 
     @Test
+    void invalidInput_nullDistanceLookup_isRejected() {
+        IllegalArgumentException error = assertThrows(
+            IllegalArgumentException.class,
+            () -> new GreedyAssignment(null)
+        );
+
+        assertEquals("distanceLookup must not be null", error.getMessage());
+    }
+
+    @Test
+    void invalidInput_negativeUrgency_isRejected() {
+        List<ServiceRequest> requests = List.of(
+            new ServiceRequest("REQ1", "Balme Library", "Main Gate",
+                "Maintenance", -1, 1, 1)
+        );
+
+        IllegalArgumentException error = assertThrows(
+            IllegalArgumentException.class,
+            () -> new GreedyAssignment(fixedDistance)
+                .greedyAssign(requests, new ArrayList<>())
+        );
+
+        assertEquals("request urgency must not be negative: REQ1", error.getMessage());
+    }
+
+    @Test
+    void equalUrgency_keepsOriginalRequestOrder() {
+        List<ServiceRequest> requests = List.of(
+            new ServiceRequest("REQ2", "Balme Library", "Main Gate", "Maintenance", 5, 1, 1),
+            new ServiceRequest("REQ1", "Pentagon Hostel", "Main Gate", "Maintenance", 5, 1, 1)
+        );
+        List<Resource> resources = new ArrayList<>(List.of(
+            new Resource("R1", "van", "Main Gate", true),
+            new Resource("R2", "van", "Main Gate", true)
+        ));
+
+        List<Assignment> result =
+            new GreedyAssignment(fixedDistance).greedyAssign(requests, resources);
+
+        assertEquals(List.of("REQ2", "REQ1"),
+            result.stream().map(Assignment::getRequestId).toList());
+    }
+
+    @Test
     void equalDistance_usesLowestResourceIdAsTieBreaker() {
         List<ServiceRequest> requests = List.of(
             new ServiceRequest("REQ1", "Balme Library", "Pentagon Hostel", "Maintenance", 5, 1, 5)
