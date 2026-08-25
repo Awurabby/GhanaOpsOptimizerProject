@@ -54,10 +54,7 @@ public class Kruskal {
 
         // ---- 3. Union-find to detect cycles ----
         // Custom structure: structures.DisjointSet.
-        DisjointSet dsu = new DisjointSet();
-        for (int i = 0; i < V; i++) {
-            dsu.makeSet(i);
-        }
+       DisjointSet dsu = new DisjointSet(V);
 
         // ---- 4. Add edges that do not form a cycle until V-1 edges ----
         // Custom structure: structures.DynamicArray.
