@@ -2,14 +2,10 @@ package com.team.smartops;
 
 import java.util.Scanner;
 
-/**
- * Entry point. This is the console menu the examiner will use to run
- * demonstrations without touching the source code (see brief, Section 8.iv).
- *
- * OWNER: Lead — wires the other modules together. Don't put real logic here;
- * call into db/, structures/, algorithms/, performance/ instead.
- */
 public class App {
+
+    private static AppState state = new AppState();
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -18,14 +14,18 @@ public class App {
             printMenu();
             String choice = scanner.nextLine().trim();
 
-            switch (choice) {
-                case "1" -> System.out.println("TODO: load data from database into structures");
-                case "2" -> System.out.println("TODO: run search/sort demo");
-                case "3" -> System.out.println("TODO: run graph routing demo (BFS/DFS/Dijkstra/MST)");
-                case "4" -> System.out.println("TODO: run optimisation demo (greedy + DP)");
-                case "5" -> System.out.println("TODO: run performance experiment and export CSV");
-                case "0" -> running = false;
-                default -> System.out.println("Unknown option, try again.");
+            try {
+                switch (choice) {
+                    case "1" -> state = DataLoader.loadEverything();
+                    case "2" -> System.out.println("TODO: search/sort demo");
+                    case "3" -> System.out.println("TODO: graph demo");
+                    case "4" -> System.out.println("TODO: optimisation demo");
+                    case "5" -> System.out.println("TODO: performance demo");
+                    case "0" -> running = false;
+                    default -> System.out.println("Unknown option, try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("Something went wrong: " + e.getMessage());
             }
         }
         scanner.close();
