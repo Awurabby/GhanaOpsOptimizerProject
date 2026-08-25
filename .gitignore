@@ -1,4 +1,4 @@
-gtarget/
+target/
 *.class
 .idea/
 *.iml
@@ -6,3 +6,5 @@ gtarget/
 .DS_Store
 *.db
 *.sqlite
+hs_err_pid*.log
+replay_pid*.log
