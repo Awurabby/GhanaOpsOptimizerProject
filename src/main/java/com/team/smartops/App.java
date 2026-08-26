@@ -1,6 +1,7 @@
 package com.team.smartops;
 
 import java.util.Scanner;
+import com.team.smartops.structures.DynamicArray;
 
 public class App {
 
@@ -18,7 +19,7 @@ public class App {
                 switch (choice) {
                     case "1" -> state = DataLoader.loadEverything();
                     case "2" -> System.out.println("TODO: search/sort demo");
-                    case "3" -> System.out.println("TODO: graph demo");
+                    case "3" -> runGraphDemo();
                     case "4" -> System.out.println("TODO: optimisation demo");
                     case "5" -> System.out.println("TODO: performance demo");
                     case "0" -> running = false;
@@ -29,6 +30,26 @@ public class App {
             }
         }
         scanner.close();
+    }
+
+    private static void runGraphDemo() {
+        if (!state.graphLoaded) {
+            System.out.println("Graph isn't loaded -- run option 1 first.");
+            return;
+        }
+        System.out.println("BFS from node 0:");
+        DynamicArray<Integer> bfsResult = state.graph.bfs(0);
+        for (int i = 0; i < bfsResult.size(); i++) {
+            int node = bfsResult.get(i);
+            System.out.println("  " + node + ": " + state.graph.getName(node));
+        }
+
+        System.out.println("DFS from node 0:");
+        DynamicArray<Integer> dfsResult = state.graph.dfs(0);
+        for (int i = 0; i < dfsResult.size(); i++) {
+            int node = dfsResult.get(i);
+            System.out.println("  " + node + ": " + state.graph.getName(node));
+        }
     }
 
     private static void printMenu() {
