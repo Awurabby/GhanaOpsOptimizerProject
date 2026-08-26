@@ -97,7 +97,7 @@ public class ExperimentRunner {
     }
 
     private static int[] randomArray(int size) {
-        Random rand = new Random(42);
+        Random rand = new Random(55225); //last digit of L300 student's index number except group leader
         int[] arr = new int[size];
         for (int i = 0; i < size; i++) {
             arr[i] = rand.nextInt(1_000_000);

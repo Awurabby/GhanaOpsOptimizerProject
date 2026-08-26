@@ -18,6 +18,8 @@ public class App {
 
     private static AppState state = new AppState();
     private static java.util.Scanner scanner = new java.util.Scanner(System.in);
+    private static final int ROUTE_PENALTY = 8; // derived from index number 22152953: last two digits 5+3=8
+    private static final int PRIORITY_WEIGHT = 3; // derived from index number
 
     public static void main(String[] args) {
        
@@ -322,7 +324,7 @@ private static void runGraphDemo() {
 
                 if (weight != 0) {
                     matrix[from][to] =
-                            (int) Math.round(weight);
+                            (int) Math.round(weight) + ROUTE_PENALTY;
                 } else {
                     matrix[from][to] = 0;
                 }
@@ -352,10 +354,10 @@ private static String extractUrgency(String request) {
 
 private static int urgencyRank(String urgency) {
     return switch (urgency.toLowerCase()) {
-        case "critical" -> 4;
-        case "high" -> 3;
-        case "medium" -> 2;
-        case "low" -> 1;
+        case "critical" -> 4 * PRIORITY_WEIGHT;
+        case "high" -> 3 * PRIORITY_WEIGHT;
+        case "medium" -> 2 * PRIORITY_WEIGHT;
+        case "low" -> 1 * PRIORITY_WEIGHT;
         default -> 0;
     };
 }
