@@ -12,13 +12,15 @@ import com.team.smartops.algorithms.sort.QuickSort;
 import com.team.smartops.algorithms.sort.SelectionSort;
 import com.team.smartops.structures.DynamicArray;
 import com.team.smartops.performance.ExperimentRunner;
+import com.team.smartops.performance.Timer;
 
 public class App {
 
     private static AppState state = new AppState();
+    private static java.util.Scanner scanner = new java.util.Scanner(System.in);
 
     public static void main(String[] args) {
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
+       
         boolean running = true;
 
         while (running) {
@@ -50,123 +52,126 @@ public class App {
     }
     ExperimentRunner.runAll(state.graph);
 }
-    // =========================================================
+   
     // SEARCH + SORT DEMO
-    // =========================================================
 
-    private static void runSearchSortDemo() {
+private static void runSearchSortDemo() {
 
-        if (!state.dataLoaded || state.requests == null || state.requests.isEmpty()) {
-            System.out.println("Data isn't loaded -- run option 1 first.");
-            return;
-        }
-
-        System.out.println("\n=== SEARCH & SORT DEMO ===");
-
-        System.out.println("Service requests loaded: " + state.requests.size());
-
-        // -----------------------------------------------------
-        // LINEAR SEARCH
-        // -----------------------------------------------------
-
-        String target = state.requests.get(0);
-
-        String[] requestArray = state.requests.toArray(new String[0]);
-
-        int linearIndex =
-                LinearSearch.linearSearch(requestArray, target);
-
-        System.out.println("\nLinear Search:");
-        System.out.println("  Target: " + target);
-        System.out.println("  Result index: " + linearIndex);
-
-        // -----------------------------------------------------
-        // BINARY SEARCH
-        // -----------------------------------------------------
-        // Binary search requires sorted input.
-        // Therefore, we make a copy and sort the strings
-        // lexicographically using Java's built-in sort only
-        // for preparing the demonstration data.
-        //
-        // The actual binary search algorithm is still the
-        // team's BinarySearch implementation.
-
-        String[] sortedRequests = requestArray.clone();
-        java.util.Arrays.sort(sortedRequests);
-
-        String binaryTarget = sortedRequests[sortedRequests.length / 2];
-
-        int binaryIndex =
-                BinarySearch.binarySearch(sortedRequests, binaryTarget);
-
-        System.out.println("\nBinary Search:");
-        System.out.println("  Target: " + binaryTarget);
-        System.out.println("  Result index: " + binaryIndex);
-        System.out.println("  Precondition: input was sorted first.");
-
-        // -----------------------------------------------------
-        // PREPARE REQUEST IDs FOR SORTING
-        // -----------------------------------------------------
-
-        int[] requestIds = extractRequestIds(requestArray);
-
-        System.out.println("\nRequest IDs before sorting:");
-        printFirstValues(requestIds);
-
-        // -----------------------------------------------------
-        // INSERTION SORT
-        // -----------------------------------------------------
-
-        int[] insertionData = requestIds.clone();
-
-        InsertionSort.insertionSort(insertionData);
-
-        System.out.println("\nInsertion Sort:");
-        printFirstValues(insertionData);
-
-        // -----------------------------------------------------
-        // MERGE SORT
-        // -----------------------------------------------------
-
-        int[] mergeData = requestIds.clone();
-
-        MergeSort.mergeSort(
-                mergeData,
-                0,
-                mergeData.length - 1
-        );
-
-        System.out.println("\nMerge Sort:");
-        printFirstValues(mergeData);
-
-        // -----------------------------------------------------
-        // QUICK SORT
-        // -----------------------------------------------------
-
-        int[] quickData = requestIds.clone();
-
-        QuickSort.quickSort(
-                quickData,
-                0,
-                quickData.length - 1
-        );
-
-        System.out.println("\nQuick Sort:");
-        printFirstValues(quickData);
-
-        // -----------------------------------------------------
-        // SELECTION SORT
-        // -----------------------------------------------------
-
-        int[] selectionData = requestIds.clone();
-
-        SelectionSort.selectionSort(selectionData);
-
-        System.out.println("\nSelection Sort:");
-        printFirstValues(selectionData);
-
-        System.out.println("\nSearch and sort demo completed successfully.");
+    if (!state.dataLoaded || state.requests == null || state.requests.isEmpty()) {
+        System.out.println("Data isn't loaded -- run option 1 first.");
+        return;
     }
+
+    System.out.println("""
+
+        --- Search & Sort ---
+        1. Search for a specific request by ID
+        2. Show next request to dispatch (by urgency)
+        3. Search for a location by name
+        4. Run full sort algorithm comparison
+        0. Back to main menu
+        Choose an option:""");
+
+    String choice = scanner.nextLine().trim();
+
+    switch (choice) {
+        case "1" -> searchRequestById();
+        case "2" -> showNextRequestToDispatch();
+        case "3" -> searchLocationByName();
+        case "4" -> runFullSortComparison();
+        case "0" -> {}
+        default -> System.out.println("Unknown option.");
+    }
+}
+
+private static void searchRequestById() {
+    System.out.print("Enter request ID to search for: ");
+    String input = scanner.nextLine().trim();
+
+    String[] requestArray = state.requests.toArray(new String[0]);
+    String target = null;
+    for (String request : requestArray) {
+        if (request.startsWith(input + " - ")) {
+            target = request;
+            break;
+        }
+    }
+
+    if (target == null) {
+        System.out.println("No request found with ID " + input + ".");
+        return;
+    }
+
+    final String targetCopy = target;
+long time = Timer.timeInNanos(() ->
+    LinearSearch.linearSearch(requestArray, targetCopy));
+    System.out.println("Found: " + target);
+    System.out.println("(Linear search took " + time + " ns)");
+}
+
+private static void showNextRequestToDispatch() {
+    String best = null;
+    int bestRank = -1;
+
+    for (String request : state.requests) {
+        int rank = urgencyRank(extractUrgency(request));
+        if (rank > bestRank) {
+            bestRank = rank;
+            best = request;
+        }
+    }
+
+    if (best == null) {
+        System.out.println("No pending requests found.");
+    } else {
+        System.out.println("Next request to dispatch (highest urgency): " + best);
+    }
+}
+
+private static void searchLocationByName() {
+    System.out.println("Available locations:");
+    for (int i = 0; i < state.graph.getNumNodes(); i++) {
+        System.out.println("  " + state.graph.getName(i));
+    }
+
+    System.out.print("\nEnter a location name to search for: ");
+    String input = scanner.nextLine().trim();
+
+    int index = findLocationIndexByName(input);
+    if (index == -1) {
+        System.out.println("Location not found: " + input);
+        return;
+    }
+    System.out.println("Found: " + state.graph.getName(index) + " (node " + index + ")");
+}
+
+private static void runFullSortComparison() {
+    String[] requestArray = state.requests.toArray(new String[0]);
+    int[] requestIds = extractRequestIds(requestArray);
+
+    System.out.println("\nRequest IDs before sorting:");
+    printFirstValues(requestIds);
+
+    int[] insertionData = requestIds.clone();
+    InsertionSort.insertionSort(insertionData);
+    System.out.println("\nInsertion Sort:");
+    printFirstValues(insertionData);
+
+    int[] mergeData = requestIds.clone();
+    MergeSort.mergeSort(mergeData, 0, mergeData.length - 1);
+    System.out.println("\nMerge Sort:");
+    printFirstValues(mergeData);
+
+    int[] quickData = requestIds.clone();
+    QuickSort.quickSort(quickData, 0, quickData.length - 1);
+    System.out.println("\nQuick Sort:");
+    printFirstValues(quickData);
+
+    int[] selectionData = requestIds.clone();
+    SelectionSort.selectionSort(selectionData);
+    System.out.println("\nSelection Sort:");
+    printFirstValues(selectionData);
+}
 
     /**
      * Extracts the request ID from strings such as:
@@ -226,162 +231,77 @@ public class App {
     // GRAPH DEMO
     // =========================================================
 
-    private static void runGraphDemo() {
+private static void runGraphDemo() {
 
-        if (!state.graphLoaded) {
-            System.out.println("Graph isn't loaded -- run option 1 first.");
-            return;
-        }
+    if (!state.graphLoaded) {
+        System.out.println("Graph isn't loaded -- run option 1 first.");
+        return;
+    }
 
-        System.out.println("\n=== GRAPH ROUTING DEMO ===");
+    System.out.println("Available locations:");
+    for (int i = 0; i < state.graph.getNumNodes(); i++) {
+        System.out.println("  " + state.graph.getName(i));
+    }
 
-        // ---------------------------------------------------------
-        // 1. BFS
-        // ---------------------------------------------------------
+    System.out.print("\nEnter your CURRENT location: ");
+    String sourceName = scanner.nextLine().trim();
+    int source = findLocationIndexByName(sourceName);
+    if (source == -1) {
+        System.out.println("Location not found: " + sourceName);
+        return;
+    }
 
-        System.out.println("\nBFS from node 0:");
-
-        DynamicArray<Integer> bfsResult = state.graph.bfs(0);
-
-        for (int i = 0; i < bfsResult.size(); i++) {
-            int node = bfsResult.get(i);
-
-            System.out.println(
-                    "  " + node + ": " + state.graph.getName(node)
-            );
-        }
-
-        // ---------------------------------------------------------
-        // 2. DFS
-        // ---------------------------------------------------------
-
-        System.out.println("\nDFS from node 0:");
-
-        DynamicArray<Integer> dfsResult = state.graph.dfs(0);
-
-        for (int i = 0; i < dfsResult.size(); i++) {
-            int node = dfsResult.get(i);
-
-            System.out.println(
-                    "  " + node + ": " + state.graph.getName(node)
-            );
-        }
-
-        // ---------------------------------------------------------
-        // 3. Dijkstra
-        // ---------------------------------------------------------
-
-        System.out.println("\nDijkstra shortest paths from node 0:");
-
-        Dijkstra.Result dijkstraResult =
-                Dijkstra.dijkstra(state.graph, 0);
-
-        for (int node = 0; node < state.graph.getNumNodes(); node++) {
-
-            double distance = dijkstraResult.distanceTo(node);
-
-            if (Double.isInfinite(distance)) {
-
-                System.out.println(
-                        "  " + node + ": "
-                                + state.graph.getName(node)
-                                + " -> unreachable"
-                );
-
-            } else {
-
-                System.out.println(
-                        "  " + node + ": "
-                                + state.graph.getName(node)
-                                + " -> distance = "
-                                + distance
-                );
-            }
-        }
-
-        // ---------------------------------------------------------
-        // 4. Build adjacency matrix
-        // ---------------------------------------------------------
-
-        int[][] adjacencyMatrix = buildIntegerAdjacencyMatrix();
-
-        // ---------------------------------------------------------
-        // 5. Check connectivity before MST
-        // ---------------------------------------------------------
-
-        if (bfsResult.size() < state.graph.getNumNodes()) {
-
-            System.out.println("\nPrim/Kruskal:");
-            System.out.println(
-                    "  MST cannot currently be generated because "
-                            + "the graph is disconnected."
-            );
-
-            System.out.println(
-                    "  Connected nodes from node 0: "
-                            + bfsResult.size()
-                            + "/"
-                            + state.graph.getNumNodes()
-            );
-
-            System.out.println(
-                    "  Add more roads/edges later so the campus "
-                            + "graph becomes connected."
-            );
-
-            return;
-        }
-
-        // ---------------------------------------------------------
-        // 6. Prim
-        // ---------------------------------------------------------
-
-        System.out.println("\nPrim Minimum Spanning Tree:");
-
-        DynamicArray<int[]> primEdges =
-                Prim.buildMST(adjacencyMatrix, 0);
-
-        for (int i = 0; i < primEdges.size(); i++) {
-
-            int[] edge = primEdges.get(i);
-
-            System.out.println(
-                    "  " + state.graph.getName(edge[0])
-                            + " -- "
-                            + state.graph.getName(edge[1])
-                            + " (weight: "
-                            + state.graph.getWeight(
-                                    edge[0],
-                                    edge[1])
-                            + ")"
-            );
-        }
-
-        // ---------------------------------------------------------
-        // 7. Kruskal
-        // ---------------------------------------------------------
-
-        System.out.println("\nKruskal Minimum Spanning Tree:");
-
-        DynamicArray<int[]> kruskalEdges =
-                Kruskal.buildMST(adjacencyMatrix);
-
-        for (int i = 0; i < kruskalEdges.size(); i++) {
-
-            int[] edge = kruskalEdges.get(i);
-
-            System.out.println(
-                    "  " + state.graph.getName(edge[0])
-                            + " -- "
-                            + state.graph.getName(edge[1])
-                            + " (weight: "
-                            + state.graph.getWeight(
-                                    edge[0],
-                                    edge[1])
-                            + ")"
-            );
+    System.out.println("\nLocations reachable from " + state.graph.getName(source) + ":");
+    DynamicArray<Integer> bfsResult = state.graph.bfs(source);
+    for (int i = 0; i < bfsResult.size(); i++) {
+        int node = bfsResult.get(i);
+        if (node != source) {
+            System.out.println("  " + state.graph.getName(node));
         }
     }
+
+    System.out.print("\nEnter your DESTINATION: ");
+    String destName = scanner.nextLine().trim();
+    int destination = findLocationIndexByName(destName);
+    if (destination == -1) {
+        System.out.println("Location not found: " + destName);
+        return;
+    }
+
+    Dijkstra.Result result = Dijkstra.dijkstra(state.graph, source);
+    double distance = result.distanceTo(destination);
+
+    if (Double.isInfinite(distance)) {
+        System.out.println("\nNo route found from " + state.graph.getName(source)
+            + " to " + state.graph.getName(destination) + ".");
+        return;
+    }
+
+    System.out.println("\nRecommended route (Dijkstra):");
+    java.util.List<Integer> path = result.pathTo(destination);
+    for (int i = 0; i < path.size(); i++) {
+        System.out.print(state.graph.getName(path.get(i)));
+        if (i < path.size() - 1) System.out.print("  ->  ");
+    }
+    System.out.println("\nTotal distance: " + distance);
+
+    // --- Network-wide minimum spanning tree, for the report/demo ---
+    DynamicArray<Integer> fullReach = state.graph.bfs(0);
+    if (fullReach.size() < state.graph.getNumNodes()) {
+        System.out.println("\n(Network-wide MST skipped -- graph is not fully connected.)");
+        return;
+    }
+
+    int[][] adjacencyMatrix = buildIntegerAdjacencyMatrix();
+
+    System.out.println("\nNetwork-wide minimum spanning tree (Prim):");
+    DynamicArray<int[]> primEdges = Prim.buildMST(adjacencyMatrix, source);
+    for (int i = 0; i < primEdges.size(); i++) {
+        int[] edge = primEdges.get(i);
+        System.out.println("  " + state.graph.getName(edge[0]) + " -- " + state.graph.getName(edge[1])
+            + " (weight: " + state.graph.getWeight(edge[0], edge[1]) + ")");
+    }
+}
 
     /**
      * Converts the project's Graph representation into
@@ -412,10 +332,35 @@ public class App {
         return matrix;
     }
 
-    // =========================================================
-    // MENU
-    // =========================================================
+    private static int findLocationIndexByName(String input) {
+    for (int i = 0; i < state.graph.getNumNodes(); i++) {
+        if (state.graph.getName(i).equalsIgnoreCase(input)) return i;
+    }
+    for (int i = 0; i < state.graph.getNumNodes(); i++) {
+        if (state.graph.getName(i).toLowerCase().contains(input.toLowerCase())) return i;
+    }
+    return -1;
+}
 
+private static String extractUrgency(String request) {
+    int start = request.indexOf("Urgency: ");
+    if (start == -1) return "";
+    start += "Urgency: ".length();
+    int end = request.indexOf(" |", start);
+    return end == -1 ? request.substring(start).trim() : request.substring(start, end).trim();
+}
+
+private static int urgencyRank(String urgency) {
+    return switch (urgency.toLowerCase()) {
+        case "critical" -> 4;
+        case "high" -> 3;
+        case "medium" -> 2;
+        case "low" -> 1;
+        default -> 0;
+    };
+}
+   
+    // MENU
     private static void printMenu() {
 
         System.out.println("""
