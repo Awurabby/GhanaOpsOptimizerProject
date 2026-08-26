@@ -11,6 +11,7 @@ import com.team.smartops.algorithms.sort.MergeSort;
 import com.team.smartops.algorithms.sort.QuickSort;
 import com.team.smartops.algorithms.sort.SelectionSort;
 import com.team.smartops.structures.DynamicArray;
+import com.team.smartops.performance.ExperimentRunner;
 
 public class App {
 
@@ -30,7 +31,7 @@ public class App {
                     case "2" -> runSearchSortDemo();
                     case "3" -> runGraphDemo();
                     case "4" -> OptimisationDemo.run();
-                    case "5" -> System.out.println("TODO: performance demo");
+                    case "5" -> runPerformanceDemo();
                     case "0" -> running = false;
                     default -> System.out.println("Unknown option, try again.");
                 }
@@ -42,6 +43,13 @@ public class App {
         scanner.close();
     }
 
+    private static void runPerformanceDemo() {
+    if (!state.dataLoaded) {
+        System.out.println("Data isn't loaded -- run option 1 first.");
+        return;
+    }
+    ExperimentRunner.runAll(state.graph);
+}
     // =========================================================
     // SEARCH + SORT DEMO
     // =========================================================

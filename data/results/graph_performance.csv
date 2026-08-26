@@ -1,0 +1,4 @@
+algorithm,inputSize,avgTimeNs
+BFS,61,1185733
+DFS,61,21933
+Dijkstra,61,2092566
