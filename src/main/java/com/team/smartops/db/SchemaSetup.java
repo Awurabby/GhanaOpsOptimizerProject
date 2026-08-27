@@ -7,29 +7,31 @@ import java.sql.Statement;
 
 public class SchemaSetup {
 
-    public static void main(String[] args) {
-
+    public static void setup() {
         try (Connection conn = DatabaseConnection.connect()) {
-
-            String sql = Files.readString(
-                    Paths.get("src/main/resources/schema.sql")
-            );
-
-            Statement statement = conn.createStatement();
-
-            String[] queries = sql.split(";");
-
-            for (String query : queries) {
-                if (!query.trim().isEmpty()) {
-                    statement.execute(query);
-                }
-            }
-
-            System.out.println("Database tables created successfully!");
-
+            setup(conn);
+            System.out.println("Database tables created/verified successfully!");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    public static void setup(Connection conn) throws Exception {
+        String sql = Files.readString(
+                Paths.get("src/main/resources/schema.sql")
+        );
+
+        Statement statement = conn.createStatement();
+        String[] queries = sql.split(";");
+
+        for (String query : queries) {
+            if (!query.trim().isEmpty()) {
+                statement.execute(query);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        setup();
     }
 }

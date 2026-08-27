@@ -1,5 +1,7 @@
 package com.team.smartops.db;
 
+import com.team.smartops.model.Resource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,40 +9,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ResourceRepository {
 
-
-    public List<String> findAll(Connection conn) throws SQLException {
-
-        List<String> resources = new ArrayList<>();
-
+    public List<Resource> findAll(Connection conn) throws SQLException {
+        List<Resource> resources = new ArrayList<>();
         String sql = "SELECT * FROM resources";
 
-
         PreparedStatement stmt = conn.prepareStatement(sql);
-
         ResultSet rs = stmt.executeQuery();
 
-
         while (rs.next()) {
-
-            String resource =
-                    rs.getInt("resourceId") +
-                    " - " +
-                    rs.getString("type") +
-                    " | Status: " +
-                    rs.getString("availabilityStatus");
-
-            resources.add(resource);
-
+            resources.add(new Resource(
+                    rs.getInt("resourceId"),
+                    rs.getString("type"),
+                    rs.getInt("homeLocation"),
+                    rs.getInt("capacity"),
+                    rs.getString("availabilityStatus")
+            ));
         }
-
 
         return resources;
     }
-
-
 
     public void insert(Connection conn,
                        int resourceId,
@@ -50,7 +39,6 @@ public class ResourceRepository {
                        String availabilityStatus)
             throws SQLException {
 
-
         String sql =
                 """
                 INSERT INTO resources
@@ -58,10 +46,7 @@ public class ResourceRepository {
                 VALUES (?,?,?,?,?)
                 """;
 
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
+        PreparedStatement stmt = conn.prepareStatement(sql);
 
         stmt.setInt(1, resourceId);
         stmt.setString(2, type);
@@ -69,9 +54,6 @@ public class ResourceRepository {
         stmt.setInt(4, capacity);
         stmt.setString(5, availabilityStatus);
 
-
         stmt.executeUpdate();
-
     }
-
 }

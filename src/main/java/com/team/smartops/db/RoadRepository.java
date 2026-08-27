@@ -1,5 +1,7 @@
 package com.team.smartops.db;
 
+import com.team.smartops.model.Road;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,41 +9,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class RoadRepository {
 
-
-    public List<String> findAll(Connection conn) throws SQLException {
-
-        List<String> roads = new ArrayList<>();
-
+    public List<Road> findAll(Connection conn) throws SQLException {
+        List<Road> roads = new ArrayList<>();
         String sql = "SELECT * FROM roads";
 
-
         PreparedStatement stmt = conn.prepareStatement(sql);
-
         ResultSet rs = stmt.executeQuery();
 
-
         while (rs.next()) {
-
-            String road =
-                    rs.getInt("fromLocationId") +
-                    " -> " +
-                    rs.getInt("toLocationId") +
-                    " | Distance: " +
-                    rs.getDouble("distance") +
-                    "km";
-
-            roads.add(road);
-
+            roads.add(new Road(
+                    rs.getInt("fromLocationId"),
+                    rs.getInt("toLocationId"),
+                    rs.getDouble("distance"),
+                    rs.getDouble("travelTime"),
+                    rs.getDouble("roadConditionWeight")
+            ));
         }
-
 
         return roads;
     }
-
-
 
     public void insert(Connection conn,
                        int fromLocationId,
@@ -51,7 +39,6 @@ public class RoadRepository {
                        double roadConditionWeight)
             throws SQLException {
 
-
         String sql =
                 """
                 INSERT INTO roads
@@ -59,10 +46,7 @@ public class RoadRepository {
                 VALUES (?,?,?,?,?)
                 """;
 
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
+        PreparedStatement stmt = conn.prepareStatement(sql);
 
         stmt.setInt(1, fromLocationId);
         stmt.setInt(2, toLocationId);
@@ -70,9 +54,6 @@ public class RoadRepository {
         stmt.setDouble(4, travelTime);
         stmt.setDouble(5, roadConditionWeight);
 
-
         stmt.executeUpdate();
-
     }
-
 }

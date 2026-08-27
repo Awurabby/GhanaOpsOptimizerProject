@@ -1,11 +1,12 @@
 package com.team.smartops;
 
 import com.team.smartops.db.*;
+import com.team.smartops.model.Location;
+import com.team.smartops.model.ModelAdapters;
+import com.team.smartops.model.Road;
 import com.team.smartops.structures.Graph;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,14 +19,16 @@ public class DataLoader {
 
         try {
             conn = DatabaseConnection.connect();
+            SchemaSetup.setup(conn);
             System.out.println("Database connected.");
         } catch (Exception e) {
             System.out.println("FAILED to connect to database: " + e.getMessage());
             return state;
         }
 
-       try {
+        try {
             state.locations = new LocationRepository().findAll(conn);
+            state.locationNameIndex = ModelAdapters.buildLocationNameIndex(state.locations);
             System.out.println("Loaded " + state.locations.size() + " locations.");
         } catch (Exception e) {
             System.out.println("Locations did not load (" + e.getMessage() + ").");
@@ -37,6 +40,7 @@ public class DataLoader {
         } catch (Exception e) {
             System.out.println("Roads did not load (" + e.getMessage() + ").");
         }
+
         try {
             state.requests = new ServiceRequestRepository().findAll(conn);
             System.out.println("Loaded " + state.requests.size() + " service requests.");
@@ -50,10 +54,13 @@ public class DataLoader {
         } catch (Exception e) {
             System.out.println("Resources did not load (" + e.getMessage() + ").");
         }
+
         try {
-            state.graph = buildGraph(conn);
-            state.graphLoaded = true;
-            System.out.println("Graph built: " + state.graph.getNumNodes() + " nodes.");
+            if (state.locations != null && state.roads != null) {
+                state.graph = buildGraphFromState(state.locations, state.roads);
+                state.graphLoaded = true;
+                System.out.println("Graph built: " + state.graph.getNumNodes() + " nodes.");
+            }
         } catch (Exception e) {
             System.out.println("Graph did not build (" + e.getMessage() + ").");
         }
@@ -62,36 +69,27 @@ public class DataLoader {
         return state;
     }
 
-    private static Graph buildGraph(Connection conn) throws Exception {
+    private static Graph buildGraphFromState(List<Location> locations, List<Road> roads) {
         List<String> names = new ArrayList<>();
         Map<Integer, Integer> idToIndex = new LinkedHashMap<>();
 
-        PreparedStatement locStmt = conn.prepareStatement("SELECT locationId, name FROM locations");
-        ResultSet locRs = locStmt.executeQuery();
         int index = 0;
-        while (locRs.next()) {
-            int id = locRs.getInt("locationId");
-            String name = locRs.getString("name");
-            idToIndex.put(id, index);
-            names.add(name);
+        for (Location loc : locations) {
+            idToIndex.put(loc.getLocationId(), index);
+            names.add(loc.getName());
             index++;
         }
+
         Graph graph = new Graph(names.size(), names.toArray(new String[0]));
 
-        PreparedStatement roadStmt = conn.prepareStatement(
-            "SELECT fromLocationId, toLocationId, distance FROM roads");
-        ResultSet roadRs = roadStmt.executeQuery();
-        while (roadRs.next()) {
-            int fromId = roadRs.getInt("fromLocationId");
-            int toId = roadRs.getInt("toLocationId");
-            double distance = roadRs.getDouble("distance");
-
-            Integer fromIndex = idToIndex.get(fromId);
-            Integer toIndex = idToIndex.get(toId);
+        for (Road road : roads) {
+            Integer fromIndex = idToIndex.get(road.getFromLocationId());
+            Integer toIndex = idToIndex.get(road.getToLocationId());
             if (fromIndex != null && toIndex != null) {
-                graph.addEdge(fromIndex, toIndex, distance);
+                graph.addEdge(fromIndex, toIndex, road.getDistance());
             }
         }
-         return graph;
+
+        return graph;
     }
 }
