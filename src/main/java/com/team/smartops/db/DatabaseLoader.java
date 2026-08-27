@@ -64,10 +64,7 @@ public class DatabaseLoader {
     }
 
     public static void loadRoads() {
-        String file = "data/csv/roads_full.csv";
-        if (!new File(file).exists()) {
-            file = "data/csv/roads.csv";
-        }
+        String file = "data/csv/roads.csv";
 
         String sql = """
                 INSERT INTO roads

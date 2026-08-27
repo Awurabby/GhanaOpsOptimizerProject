@@ -111,7 +111,7 @@ public class RoadGenerator {
 
     /**
      * Reads locations from CSV, combines existing roads with generated nearest-neighbor
-     * roads, and writes to {@code data/csv/roads_full.csv}.
+     * roads, and writes to the designated output path (e.g. {@code data/csv/roads.csv}).
      */
     public static void generateAndSaveFullRoads(String locationsCsvPath,
                                                 String existingRoadsCsvPath,

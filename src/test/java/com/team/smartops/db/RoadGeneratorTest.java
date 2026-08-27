@@ -39,7 +39,7 @@ class RoadGeneratorTest {
     void generateAndSaveFullRoads_createsValidCsvFile() throws IOException {
         Path locCsv = Path.of("data/csv/locations.csv");
         Path roadsCsv = Path.of("data/csv/roads.csv");
-        Path outputCsv = Path.of("data/csv/roads_full.csv");
+        Path outputCsv = Path.of("target/test-roads-output.csv");
 
         if (Files.exists(locCsv)) {
             RoadGenerator.generateAndSaveFullRoads(
@@ -51,6 +51,7 @@ class RoadGeneratorTest {
             assertTrue(Files.exists(outputCsv));
             List<String> lines = Files.readAllLines(outputCsv);
             assertTrue(lines.size() > 20, "generated roads should contain multiple connections");
+            Files.deleteIfExists(outputCsv);
         }
     }
 }
