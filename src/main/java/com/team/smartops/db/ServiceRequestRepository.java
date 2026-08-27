@@ -1,5 +1,7 @@
 package com.team.smartops.db;
 
+import com.team.smartops.model.ServiceRequest;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,42 +9,30 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ServiceRequestRepository {
 
-
-    public List<String> findAll(Connection conn) throws SQLException {
-
-        List<String> requests = new ArrayList<>();
-
+    public List<ServiceRequest> findAll(Connection conn) throws SQLException {
+        List<ServiceRequest> requests = new ArrayList<>();
         String sql = "SELECT * FROM service_requests";
 
-
         PreparedStatement stmt = conn.prepareStatement(sql);
-
         ResultSet rs = stmt.executeQuery();
 
-
         while (rs.next()) {
-
-            String request =
-                    rs.getInt("requestId") +
-                    " - " +
-                    rs.getString("category") +
-                    " | Urgency: " +
-                    rs.getString("urgency") +
-                    " | Status: " +
-                    rs.getString("status");
-
-            requests.add(request);
-
+            requests.add(new ServiceRequest(
+                    rs.getInt("requestId"),
+                    rs.getInt("source"),
+                    rs.getInt("destination"),
+                    rs.getString("category"),
+                    rs.getString("urgency"),
+                    rs.getString("timeSubmitted"),
+                    rs.getString("deadline"),
+                    rs.getString("status")
+            ));
         }
-
 
         return requests;
     }
-
-
 
     public void insert(Connection conn,
                        int requestId,
@@ -55,7 +45,6 @@ public class ServiceRequestRepository {
                        String status)
             throws SQLException {
 
-
         String sql =
                 """
                 INSERT INTO service_requests
@@ -63,10 +52,7 @@ public class ServiceRequestRepository {
                 VALUES (?,?,?,?,?,?,?,?)
                 """;
 
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
+        PreparedStatement stmt = conn.prepareStatement(sql);
 
         stmt.setInt(1, requestId);
         stmt.setInt(2, source);
@@ -77,9 +63,6 @@ public class ServiceRequestRepository {
         stmt.setString(7, deadline);
         stmt.setString(8, status);
 
-
         stmt.executeUpdate();
-
     }
-
 }

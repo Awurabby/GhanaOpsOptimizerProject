@@ -1,5 +1,7 @@
 package com.team.smartops.db;
 
+import com.team.smartops.model.Location;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,9 +13,9 @@ import java.util.List;
 public class LocationRepository {
 
 
-    public List<String> findAll(Connection conn) throws SQLException {
+    public List<Location> findAll(Connection conn) throws SQLException {
 
-        List<String> locations = new ArrayList<>();
+        List<Location> locations = new ArrayList<>();
 
         String sql = "SELECT * FROM locations";
 
@@ -25,17 +27,41 @@ public class LocationRepository {
 
         while (rs.next()) {
 
-            String location =
-                    rs.getInt("locationId") + " - " +
-                    rs.getString("name") + " - " +
-                    rs.getString("area");
-
-            locations.add(location);
+            locations.add(new Location(
+                    rs.getInt("locationId"),
+                    rs.getString("name"),
+                    rs.getString("area"),
+                    rs.getString("type"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude")));
 
         }
 
 
         return locations;
+    }
+
+
+    public Location findById(Connection conn, int locationId) throws SQLException {
+
+        String sql = "SELECT * FROM locations WHERE locationId = ?";
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, locationId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return new Location(
+                    rs.getInt("locationId"),
+                    rs.getString("name"),
+                    rs.getString("area"),
+                    rs.getString("type"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"));
+        }
+
+        return null;
     }
 
 
