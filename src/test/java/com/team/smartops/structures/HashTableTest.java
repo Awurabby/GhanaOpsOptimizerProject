@@ -82,6 +82,14 @@ class HashTableTest {
             assertDoesNotThrow(() -> table.remove("nothing-here"));
             assertEquals(0, table.size());
         }
+
+        @Test
+        @DisplayName("handles Integer.MIN_VALUE hashCode without negative index crash")
+        void handlesIntegerMinValueHashCode() {
+            HashTable<Integer, String> table = new HashTable<>(8);
+            assertDoesNotThrow(() -> table.put(Integer.MIN_VALUE, "min_val"));
+            assertEquals("min_val", table.get(Integer.MIN_VALUE));
+        }
     }
 
     @Nested

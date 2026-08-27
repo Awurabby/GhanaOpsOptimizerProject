@@ -39,7 +39,7 @@ public class HashTable<K, V> {
     }
 
     private int hash(K key) {
-        return Math.abs(key.hashCode()) % tableSize;
+        return (key.hashCode() & 0x7fffffff) % tableSize;
     }
 
     public void put(K key, V value) {
