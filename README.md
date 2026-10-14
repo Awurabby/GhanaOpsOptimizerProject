@@ -18,11 +18,11 @@ are in the project brief (kept out of this repo -- see your team's shared drive)
    ```
 3. Build it:
    ```
-   mvn compile
+   mvn compile OR BUILD AND RUN BELOW
    ```
 4. Run the console menu:
    ```
-   mvn exec:java -Dexec.mainClass="com.team.smartops.App"
+   mvn compile exec:java "-Dexec.mainClass=com.team.smartops.App"
    ```
    (or just run `App.java` from your IDE)
 5. Run the tests:
